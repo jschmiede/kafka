@@ -6,34 +6,33 @@ namespace PublisherApi.Controllers {
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase {
-        private static readonly string[] Summaries = new[]
-        {
-        "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    };
 
-        private readonly ILogger<WeatherForecastController> _logger;
+
+        private readonly ILogger<WeatherForecastController> Logger;
         private readonly IWeaderDataPublisher WeaderDataPublisher;
+        private readonly IHttpClientFactory HttpClientFactory;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IWeaderDataPublisher weaderDataPublisher) {
-            _logger = logger;
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, IWeaderDataPublisher weaderDataPublisher, IHttpClientFactory httpClientFactory) {
+            Logger = logger;
             WeaderDataPublisher = weaderDataPublisher;
+            HttpClientFactory = httpClientFactory;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get() {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+        public async Task<ActionResult<IEnumerable<WeatherForecast>>> GetAsync() {
+            var client = HttpClientFactory.CreateClient("ApiClient");
+            var result = await client.GetFromJsonAsync<IEnumerable<WeatherForecast>>("api/faulty");
+            if (result != null) {
+                return Ok(result);
+            }
+            return BadRequest();
         }
 
         [HttpPost]
         public async Task Post([FromBody] Weather weather) {
 
             var response = await WeaderDataPublisher.PublishAsync(weather);
-            _logger.LogInformation($"Value: {response.Value}, TopicPartitionOffset: {response.TopicPartitionOffset}, Timestamp: {response.Timestamp.UtcDateTime:HH:mm:ss.fff}, Status: {response.Status}");
+            Logger.LogInformation($"Value: {response.Value}, TopicPartitionOffset: {response.TopicPartitionOffset}, Timestamp: {response.Timestamp.UtcDateTime:HH:mm:ss.fff}, Status: {response.Status}");
 
         }
 
