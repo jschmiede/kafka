@@ -1,6 +1,7 @@
 using Confluent.Kafka;
 
 using Polly;
+using Polly.Contrib.WaitAndRetry;
 
 using PublisherApi;
 
@@ -24,12 +25,11 @@ builder.Services.AddSwaggerGen();
 //Polly over http client 
 builder.Services.AddHttpClient("ApiClient", c => {
     c.BaseAddress = new Uri("https://localhost:7299");
-})
-    .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(new[] {
-    TimeSpan.FromSeconds(1),
-    TimeSpan.FromSeconds(3),
-    TimeSpan.FromSeconds(3)
-}));
+}).AddTransientHttpErrorPolicy(p =>
+    p.WaitAndRetryAsync(Backoff.DecorrelatedJitterBackoffV2(TimeSpan.FromSeconds(1), 5))
+).AddTransientHttpErrorPolicy(p =>
+    p.CircuitBreakerAsync(6, TimeSpan.FromSeconds(5))
+);
 
 //Kafka
 var config = new ProducerConfig { BootstrapServers = ConfigValues.BootstrapServers };
@@ -49,7 +49,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
-    }
+}
 
 app.UseHttpsRedirection();
 

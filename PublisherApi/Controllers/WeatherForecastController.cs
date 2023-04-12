@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
+using Newtonsoft.Json;
+
 using ShartedLib;
 
 namespace PublisherApi.Controllers {
@@ -21,11 +23,23 @@ namespace PublisherApi.Controllers {
         [HttpGet(Name = "GetWeatherForecast")]
         public async Task<ActionResult<IEnumerable<WeatherForecast>>> GetAsync() {
             var client = HttpClientFactory.CreateClient("ApiClient");
-            var result = await client.GetFromJsonAsync<IEnumerable<WeatherForecast>>("api/faulty");
-            if (result != null) {
-                return Ok(result);
+
+            try {
+                var result = await client.GetAsync("api/faulty");
+                result.EnsureSuccessStatusCode();
+                if (result.StatusCode == System.Net.HttpStatusCode.NoContent) {
+                    return NoContent();
+                }
+                var body = await result.Content.ReadAsStringAsync();
+                var response = JsonConvert.DeserializeObject<IEnumerable<WeatherForecast>>(body);
+                return Ok(response);
+
+
+            } catch (HttpRequestException ex) {
+                return BadRequest(ex);
             }
-            return BadRequest();
+
+
         }
 
         [HttpPost]

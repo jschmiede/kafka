@@ -23,11 +23,11 @@ namespace PublisherApi.Controllers {
                 case 0:
                     return Ok(WeatherForecastService.GetForcasts());
                 case 1:
-                    return BadRequest();
-                case 2:
-                    return NotFound();
-                default:
                     return base.NoContent();
+                case 2:
+                    return StatusCode(StatusCodes.Status500InternalServerError);
+                default:
+                    return NotFound();
             }
 
         }
