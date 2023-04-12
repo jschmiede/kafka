@@ -14,7 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublisherApi", "PublisherApi\PublisherApi.csproj", "{95ED1681-EA89-42BC-B66D-350957D488D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PublisherApi", "PublisherApi\PublisherApi.csproj", "{95ED1681-EA89-42BC-B66D-350957D488D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StreamConsumerApp", "StreamConsumerApp\StreamConsumerApp.csproj", "{8ABD2119-88D5-4CC3-A63D-F9E0CF8E26C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{95ED1681-EA89-42BC-B66D-350957D488D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95ED1681-EA89-42BC-B66D-350957D488D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95ED1681-EA89-42BC-B66D-350957D488D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8ABD2119-88D5-4CC3-A63D-F9E0CF8E26C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8ABD2119-88D5-4CC3-A63D-F9E0CF8E26C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8ABD2119-88D5-4CC3-A63D-F9E0CF8E26C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8ABD2119-88D5-4CC3-A63D-F9E0CF8E26C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
